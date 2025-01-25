@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrainTu - Brain Tumor Classifier</title>
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='fav.jpg') }}"/>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background: url('/static/bg-image.jpg') no-repeat center center fixed;
+            background: rgba(0, 0, 0, 0.8) no-repeat center center fixed;
             background-size: cover;
             font-family: 'Poppins', sans-serif;
-            color: #fff;
+            color: #f5f5f5;
         }
         header {
             text-align: center;
@@ -41,7 +40,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -65,23 +63,47 @@
             background-color: #45A049;
         }
         .result-section {
-            background: #ffffff;
-            color: #212529;
+            background: #1e293b;
+            color: #f1f5f9;
             border-radius: 10px;
-            padding: 20px;
+            padding: 30px;
             margin-top: 20px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
         }
-        .result-section h2 {
-            color: #4CAF50;
+        .result-section.show {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
         }
-        .result-section .result-card {
-            background: #f4f4f4;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .result-card {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b); /* Gold gradient */
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            color: #1e293b;
+        }
+        .result-card h3 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e40af;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        .result-card p {
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 0;
+        }
+        .result-card .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
         }
         footer {
             margin-top: 30px;
@@ -107,11 +129,16 @@
             <img id="previewImage" alt="Uploaded Image Preview">
         </section>
 
-        <section class="result-section" id="resultSection" style="display: none;">
+        <section class="result-section" id="resultSection">
             <h2>Prediction Result</h2>
             <div class="result-card">
+                <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#4CAF50" class="bi bi-shield-check" viewBox="0 0 16 16">
+                        <path d="M5.071.146a.5.5 0 0 1 .858 0L8 1.742l2.071-1.596a.5.5 0 0 1 .858.421v4.59c0 3.374-2.174 6.528-5.29 7.93-.493.222-.986.388-1.446.522A9.46 9.46 0 0 1 8 15.99c.44-.134.933-.3 1.426-.522C12.174 12.861 14 9.707 14 6.331V1.158a.5.5 0 0 1 .858-.421L16 1.742l-2.071 1.596a.5.5 0 0 1-.858 0L12 1.742 9.93 3.338a.5.5 0 0 1-.858 0L8 1.742 5.93 3.338a.5.5 0 0 1-.858 0L4 1.742 1.929 3.338a.5.5 0 0 1-.858 0L0 1.742l2.071-1.596a.5.5 0 0 1 .858-.421v4.59c0 3.374 2.174 6.528 5.29 7.93.493.222.986.388 1.446.522zM4.79 5.247a.5.5 0 0 1 .704-.058L8 7.543l2.506-2.354a.5.5 0 0 1 .648.759l-3 2.827a.5.5 0 0 1-.648 0l-2-1.885a.5.5 0 0 1-.058-.704z"/>
+                    </svg>
+                </div>
                 <p>The uploaded image indicates:</p>
-                <h3 id="predictionText"></h3>
+                <h3 id="predictionText">...</h3>
             </div>
         </section>
     </div>
@@ -164,7 +191,7 @@
                 }
 
                 predictionText.textContent = result.prediction;
-                resultSection.style.display = 'flex';
+                resultSection.classList.add('show'); // Add animation class
             } catch (error) {
                 alert(error.message);
             }
